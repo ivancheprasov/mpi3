@@ -1,0 +1,27 @@
+<project name="lab3" default="compile" basedir="..">
+    <property file="ant/build.properties"/>
+    <path id="classpathCompile">
+        <fileset dir="${lib}" includes="*.jar"/>
+    </path>
+    <target name="clean">
+        <delete dir="${build}"/>
+        <delete dir="${doc}"/>
+        <delete dir="${cache}"/>
+        <delete dir="${dist}"/>
+        <delete dir="${production}"/>
+        <echo message="The build directory is clean"/>
+    </target>
+    <target name="init">
+        <mkdir dir="${build}"/>
+        <mkdir dir="${doc}"/>
+        <mkdir dir="${cache}"/>
+        <mkdir dir="${dist}"/>
+        <mkdir dir="${production}"/>
+        <echo message="The build directory is created"/>
+    </target>
+    <target name="compile" depends="clean,init">
+        <echo>Compiling the source files</echo>
+        <javac srcdir="${src}" destdir="${production}" classpathref="classpathCompile" compiler="javac1.8"
+               failonerror="false" includeantruntime="false"/>
+    </target>
+</project>

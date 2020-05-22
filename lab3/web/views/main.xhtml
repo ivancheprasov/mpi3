@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ps="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Лабораторная работа №3</title>
+    <h:outputStylesheet name="style.css"/>
+    <h:outputScript name="scripts/jquery-3.4.1.min.js"/>
+    <h:outputScript name="js/code.js"/>
+</h:head>
+<h:body>
+    <div class="left-table">
+        <table class="point-table">
+            <thead>
+            <tr>
+                <td class="table-heading" colspan="2">Выберите координаты точки и радиус</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Область</td>
+                <td>Значения</td>
+            </tr>
+            <tr>
+                <td rowspan="6" id="canvas-cell">
+                    <div id="canvas-container">
+                        <canvas id="canvas">Здесь должен был быть Canvas, но ваш браузер его не поддерживает.</canvas>
+                        <h:form id="hiddenForm" name="hiddenForm" style="display: none;">
+                            <h:inputText id="xCanvas" styleClass="xCanvas" value="${mainBean.x}"/>
+                            <h:inputText id="yCanvas" styleClass="yCanvas" value="${mainBean.y}"/>
+                            <h:inputText id="rCanvas" styleClass="rCanvas" value="${mainBean.r}"/>
+                            <h:commandButton id="pushMe" action="${mainBean.addDot(true)}" styleClass="canvasButton">
+                                <f:ajax execute="hiddenForm" render="resultTable"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </td>
+                <td>
+                    Координата Х:
+                </td>
+            </tr>
+            <h:form id="form" >
+                <tr>
+                    <td>
+                        <h:selectOneMenu value="${mainBean.x}" id="x-input" styleClass="x-input">
+                            <f:selectItems value="#{mainBean.xList}" var="c" itemLabel="#{c}" itemValue="#{c}"/>
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Координата Y:
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:inputText id="y-input" maxlength="10" ps:placeholder="от -5 до 3" styleClass="y-input" value="${mainBean.y}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Радиус:
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:selectOneMenu value="${mainBean.r}" id="r-input" styleClass="r-input"
+                                         onchange="changeR(this.options[this.selectedIndex].value)">
+                            <f:selectItems value="#{mainBean.rList}" var="c" itemLabel="#{c}" itemValue="#{c}"/>
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <h:button value="Отправить" onclick="return formSubmit(event)" styleClass="submitButton"/>
+                        <h:commandButton styleClass="submitCommandButton" action="${mainBean.addDot(false)}">
+                            <f:ajax execute="form" render="resultTable"/>
+                        </h:commandButton>
+                    </td>
+                </tr>
+            </h:form>
+            </tbody>
+        </table>
+    </div>
+    <div class="right-table">
+        <table class="point-table">
+            <thead>
+            <tr>
+                <td class="table-heading">
+                    Результат обработки данных
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <h:dataTable value="#{mainBean.dotList}" var="dot" id="resultTable" styleClass="resultTable" >
+                        <h:column>
+                            <f:facet name="header" styleClass="firstLine">X</f:facet>
+                            ${dot.x}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header" styleClass="firstLine">Y</f:facet>
+                            ${dot.y}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header" styleClass="firstLine">R</f:facet>
+                            ${dot.r}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header" styleClass="firstLine">Попадание</f:facet>
+                            ${dot.hit}
+                        </h:column>
+                    </h:dataTable>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h:form>
+                        <h:commandLink styleClass="indexLink" action="index?faces-redirect=true">Вернуться на титульную страницу</h:commandLink>
+                    </h:form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="bottom-table">
+        <table class="error-table">
+            <thead>
+            <tr>
+                <td>Полезные советы</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <ul id="error-log">
+                    </ul>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <h:outputScript name="js/canvas.js"/>
+    <h:outputScript name="js/setResultTable.js"/>
+</h:body>
+</html>
