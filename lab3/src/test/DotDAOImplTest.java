@@ -51,7 +51,7 @@ public class DotDAOImplTest {
     public void testGetDots() throws SQLException {
         Dot toCreate = new Dot(4, 2, 3, true);
         connection.createStatement().executeUpdate(
-                "insert into public.dots values (" + toCreate.getId() + ", " + toCreate.isHit() + ", " + toCreate.getR() + ", " + toCreate.getX() + "," + toCreate.getY() + ")");
+                "insert into public.dots values (" + toCreate.getId() + ", " + toCreate.ishit() + ", " + toCreate.getR() + ", " + toCreate.getX() + "," + toCreate.getY() + ")");
         assert dao.getDots().size() == 1;
         Dot found = dao.getDots().get(0);
         assertDots(found, toCreate);
