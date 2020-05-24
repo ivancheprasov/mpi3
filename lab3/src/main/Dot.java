@@ -3,10 +3,11 @@ package main;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "dots")
+@Table(schema = "public",name = "dots")
 public class Dot {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @SequenceGenerator(name = "id_gen", sequenceName = "SEQ_ID", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @Column(table = "dots", name = "x")
@@ -63,7 +64,7 @@ public class Dot {
         this.r = r;
     }
 
-    public Dot(double x, double y, double r, boolean hit) {
+    public Dot( double x, double y, double r, boolean hit) {
         this.x = x;
         this.y = y;
         this.r = r;
@@ -79,6 +80,15 @@ public class Dot {
         this.y = y;
         this.r = r;
     }
+
+    public Dot(int id,  double x, double y, double r, boolean hit) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.hit = hit;
+    }
+
 
     @Override
     public String toString() {

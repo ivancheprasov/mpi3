@@ -169,4 +169,6 @@ public class MainBean implements Serializable {
     public void setDoubleR(double doubleR) {
         this.doubleR = doubleR;
     }
+
+
 }

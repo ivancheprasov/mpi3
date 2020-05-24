@@ -14,7 +14,7 @@ public class DotDAOImpl implements DotDAO {
     private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
 
-    protected void activateComponent() {
+    public void activateComponent() {
         Map map = new HashMap();
         map.put(PersistenceUnitProperties.CLASSLOADER, getClass().getClassLoader());
         if(System.getProperty("os.name").contains("Windows")) {
@@ -25,7 +25,7 @@ public class DotDAOImpl implements DotDAO {
         entityManager = entityManagerFactory.createEntityManager();
     }
 
-    protected void deactivateComponent() {
+    public void deactivateComponent() {
         if (entityManager.getTransaction().isActive()) {
             entityManager.getTransaction().commit();
         }
