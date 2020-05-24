@@ -3,7 +3,7 @@ package main;
 import javax.persistence.*;
 
 @Entity
-@Table(schema = "public",name = "dots")
+@Table(name = "dots", schema = "public")
 public class Dot {
     @Id
 //    @SequenceGenerator(name = "id_gen", sequenceName = "SEQ_ID", allocationSize = 1)
@@ -19,8 +19,8 @@ public class Dot {
     @Column(table = "dots", name = "r")
     private double r;
 
-    @Column(table = "dots", name = "hit")
-    private boolean hit;
+    @Column(table = "dots", name = "is_hit")
+    private boolean is_hit;
 
     public double getX() {
         return x;
@@ -50,12 +50,12 @@ public class Dot {
         return id;
     }
 
-    public boolean isHit() {
-        return hit;
+    public boolean ishit() {
+        return is_hit;
     }
 
-    public void setHit(boolean hit) {
-        this.hit = hit;
+    public void setIs_hit(boolean is_hit) {
+        this.is_hit = is_hit;
     }
 
     public Dot(double x, double y, double r) {
@@ -64,11 +64,11 @@ public class Dot {
         this.r = r;
     }
 
-    public Dot( double x, double y, double r, boolean hit) {
+    public Dot(double x, double y, double r, boolean is_hit) {
         this.x = x;
         this.y = y;
         this.r = r;
-        this.hit = hit;
+        this.is_hit = is_hit;
     }
 
     public Dot() {
@@ -86,7 +86,7 @@ public class Dot {
         this.x = x;
         this.y = y;
         this.r = r;
-        this.hit = hit;
+        this.is_hit = hit;
     }
 
 
@@ -97,7 +97,7 @@ public class Dot {
                 ", x=" + x +
                 ", y=" + y +
                 ", r=" + r +
-                ", hit=" + hit +
+                ", is_hit=" + is_hit +
                 '}';
     }
 }
