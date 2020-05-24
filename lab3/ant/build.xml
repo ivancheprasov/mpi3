@@ -17,7 +17,7 @@
     </target>
     <target name="compile" depends="clean,init">
         <echo>Compiling the source files</echo>
-        <javac srcdir="${src}" destdir="${production}" classpathref="classpathCompile" compiler="javac1.8"
+        <javac srcdir="${src.main}" destdir="${production}" classpathref="classpathCompile" compiler="javac1.8"
                failonerror="false" includeantruntime="false"/>
     </target>
     <target name="copy" depends="compile">
@@ -29,6 +29,9 @@
         </copy>
         <copy todir="${build.lib}">
             <fileset dir="${lib}"/>
+        </copy>
+        <copy todir="${build.META-INF}">
+            <fileset dir="${META-INF}"/>
         </copy>
     </target>
     <target name="build" depends="copy">

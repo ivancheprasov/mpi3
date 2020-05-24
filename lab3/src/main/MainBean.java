@@ -68,7 +68,7 @@ public class MainBean implements Serializable {
         this.canvas = canvas;
         if (isDotValid()) {
             Dot dot = new Dot(doubleX, doubleY, doubleR);
-            dot.setHit(isHit());
+            dot.setIs_hit(isHit());
             while (dotList.size() >= 5) {
                 dao.deleteDotById(dotList.get(0).getId());
                 dotList.remove(0);
