@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Math.pow;
+
 public class DotDAOImpl implements DotDAO {
 
     private EntityManagerFactory entityManagerFactory;
@@ -78,6 +80,12 @@ public class DotDAOImpl implements DotDAO {
             dots = dots.subList(0,5);
         }
         addDots(dots);
+    }
+
+    public boolean isHit(double x, double y, double r) {
+        return (x <= 0 && y >= 0 && pow(x, 2) + pow(y, 2) < pow(r, 2))
+                || (x >= 0 && y >= 0 && y <= r && x <= r / 2)
+                || (x <= 0 && y <= 0 && y >= -x - r);
     }
 
 }

@@ -96,6 +96,15 @@ public class DotDAOImplTest {
         assert dao.getDots().size() == 1;
     }
 
+    @Test
+    public void testIsHit(){
+        assert dao.isHit(1,2,3);
+        assert !dao.isHit(-4, 2, 4);
+        assert !dao.isHit(-1, -3, 2);
+        assert !dao.isHit(3, -1, 1);
+        assert dao.isHit(1,1, 4);
+    }
+
     private void assertDots(Dot created, Dot toCreate) {
         assert created.getR() == toCreate.getR();
         assert created.getX() == toCreate.getX();

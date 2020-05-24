@@ -1,4 +1,5 @@
 package main;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.Serializable;
@@ -25,7 +26,7 @@ public class MainBean implements Serializable {
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         dao = new DotDAOImpl();
         dao.activateComponent();
         if (dao.getDots().size() > 5) {
@@ -36,7 +37,7 @@ public class MainBean implements Serializable {
     }
 
     @PreDestroy
-    public void destroy(){
+    public void destroy() {
         dao.deactivateComponent();
     }
 
@@ -100,10 +101,10 @@ public class MainBean implements Serializable {
     }
 
     public boolean isHit() {
-        return (doubleX <= 0 && doubleY >= 0 && pow(doubleX, 2) + pow(doubleY, 2) < pow(doubleR, 2))
-                || (doubleX >= 0 && doubleY >= 0 && doubleY <= doubleR && doubleX <= doubleR / 2)
-                || (doubleX <= 0 && doubleY <= 0 && doubleY >= -doubleX - doubleR);
+        return dao.isHit(doubleX, doubleY, doubleR);
     }
+
+
 
     private boolean isValidDouble(String str) {
         try {
