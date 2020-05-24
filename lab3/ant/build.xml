@@ -4,18 +4,14 @@
         <fileset dir="${lib}" includes="*.jar"/>
     </path>
     <target name="clean">
-        <delete dir="${build}"/>
-        <delete dir="${doc}"/>
-        <delete dir="${cache}"/>
-        <delete dir="${dist}"/>
-        <delete dir="${production}"/>
+        <delete dir="${out}"/>
         <echo message="The build directory is clean"/>
     </target>
     <target name="init">
+        <mkdir dir="${out}"/>
         <mkdir dir="${build}"/>
-        <mkdir dir="${doc}"/>
-        <mkdir dir="${cache}"/>
-        <mkdir dir="${dist}"/>
+        <mkdir dir="${env}"/>
+        <mkdir dir="${ascii}"/>
         <mkdir dir="${production}"/>
         <echo message="The build directory is created"/>
     </target>
@@ -23,5 +19,22 @@
         <echo>Compiling the source files</echo>
         <javac srcdir="${src}" destdir="${production}" classpathref="classpathCompile" compiler="javac1.8"
                failonerror="false" includeantruntime="false"/>
+    </target>
+    <target name="copy" depends="compile">
+        <copy todir="${build}">
+            <fileset dir="${web}"/>
+        </copy>
+        <copy todir="${build.classes}">
+            <fileset dir="${production.main}"/>
+        </copy>
+        <copy todir="${build.lib}">
+            <fileset dir="${lib}"/>
+        </copy>
+    </target>
+    <target name="build" depends="copy">
+        <echo>Building the war file</echo>
+        <war destfile="${artifact}/${project.name}.war" webxml="${web.xml}">
+            <fileset dir="${build}"/>
+        </war>
     </target>
 </project>
