@@ -2,12 +2,11 @@ package test;
 
 import main.Dot;
 import main.DotDAOImpl;
+import main.PropertiesLoader;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -17,13 +16,11 @@ import java.util.Properties;
 
 public class DotDAOImplTest {
     private static Connection connection;
-    private static Properties properties = getProperties();
+    private static Properties properties = PropertiesLoader.getProperties();
     private static final String DB_URL = "jdbc:postgresql://127.0.0.1:5432/postgres";
 
     private static final String USER = getProperty("USER");
     private static final String PASS = getProperty("PASS");
-//    private static final String USER = "postgres";
-//    private static final String PASS = "postgres";
 
     private static DotDAOImpl dao;
 
@@ -112,26 +109,6 @@ public class DotDAOImplTest {
         assert created.getR() == toCreate.getR();
         assert created.getX() == toCreate.getX();
         assert created.getY() == toCreate.getY();
-    }
-
-    private static Properties getProperties() {
-        Properties properties = new Properties();
-        boolean isPathChanged = false;
-        try {
-            properties.load(ClassLoader.getSystemResourceAsStream("META-INF/data.properties"));
-        } catch (IOException | NullPointerException e) {
-            isPathChanged = true;
-            System.out.println("Возможно, путь к файлам был изменён в следствие того, что вы используете Ant.");
-        }
-        if (isPathChanged) {
-            try {
-                String path = new File(".").getCanonicalPath();
-                properties.load(new FileReader(path + "/../out/build/WEB-INF/classes/META-INF/data.properties"));
-            } catch (IOException | NullPointerException e) {
-                System.out.println("Невозможно получить доступ к данным.");
-            }
-        }
-        return properties;
     }
 
     private static String getProperty(String name) {

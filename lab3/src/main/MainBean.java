@@ -6,8 +6,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.lang.Math.pow;
-
 public class MainBean implements Serializable {
 
     private DotDAOImpl dao;

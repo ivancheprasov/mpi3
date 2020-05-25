@@ -56,7 +56,6 @@
                 <pathelement location="${lib}/junit-4.12.jar"/>
                 <pathelement location="${lib}/hamcrest-all-1.3.jar"/>
                 <pathelement location="${production}"/>
-                <pathelement location="${build.META-INF}/persistence.xml"/>
                 <pathelement location="${lib}/javax.persistence-api-2.2.jar"/>
                 <pathelement location="${lib}/eclipselink-2.5.0.jar"/>
                 <pathelement location="${lib}/postgresql-42.2.12.jar"/>
