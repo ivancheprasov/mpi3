@@ -1,0 +1,6 @@
+<ivy-module version="2.3">
+<info organisation="org.apache" module="lab3"/>
+<dependencies>
+    <dependency org="org.postgresql" name="postgresql" rev="42.2.12"/>
+</dependencies>
+</ivy-module>

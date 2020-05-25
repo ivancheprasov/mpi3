@@ -1,6 +1,5 @@
 package main;
 
-import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.eclipse.persistence.jpa.PersistenceProvider;
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -13,7 +12,6 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -177,7 +175,7 @@ public class DotDAOImpl implements DotDAO {
 
     public void addDots(List<Dot> dotList) {
         entityManager.getTransaction().begin();
-        for (Dot dot:dotList) {
+        for (Dot dot : dotList) {
             entityManager.persist(dot);
         }
         entityManager.getTransaction().commit();

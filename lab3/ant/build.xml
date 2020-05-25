@@ -1,4 +1,4 @@
-<project name="lab3" default="compile" basedir="..">
+<project name="lab3" default="compile" basedir=".." xmlns:ivy="antlib:org.apache.ivy.ant">
     <property file="ant/build.properties"/>
     <path id="classpathCompileMain">
         <fileset dir="${lib}" includes="*.jar"/>
@@ -7,6 +7,18 @@
         <fileset dir="${lib}" includes="*.jar"/>
         <fileset dir="${production.main}" includes="*.class"/>
     </path>
+    <target name="bootstrap" description="Install ivy">
+        <mkdir dir="${user.home}/.ant/lib"/>
+        <get dest="${user.home}/.ant/lib/ivy.jar" src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/ivy-2.5.0.jar"/>
+    </target>
+    <taskdef resource="org/apache/ivy/ant/antlib.xml"
+             uri="pastrami:with.mustard">
+        <classpath>
+            <fileset dir="${lib}">
+                <include name="*.jar"/>
+            </fileset>
+        </classpath>
+    </taskdef>
     <target name="clean">
         <delete dir="${out}"/>
         <echo message="The build directory is clean"/>
@@ -19,7 +31,7 @@
         <mkdir dir="${production}"/>
         <echo message="The build directory is created"/>
     </target>
-    <target name="compile" depends="clean,init">
+    <target name="compile" depends="clean-all,init">
         <echo>Compiling the source files</echo>
         <javac srcdir="${src.main}" destdir="${production}" classpathref="classpathCompileMain" compiler="javac1.8"
                failonerror="false" includeantruntime="false"/>
@@ -43,13 +55,21 @@
             <fileset dir="${production.test}"/>
         </copy>
     </target>
+    <target name="clean-all" depends="clean" description="Purge ivy cache">
+        <ivy:cleancache/>
+    </target>
+    <target name="resolve">
+        <ivy:settings/>
+        <ivy:resolve file="ant/ivy.xml" />
+    </target>
     <target name="build" depends="copy">
         <echo>Building the war file</echo>
         <war destfile="${artifact}/${project.name}.war" webxml="${web.xml}">
             <fileset dir="${build}"/>
         </war>
     </target>
-    <target name="test" depends="build">
+    <target name="test" depends="build,resolve">
+        <ivy:retrieve/>
         <junit printsummary="on">
             <test name="test.DotDAOImplTest"/>
             <classpath>
@@ -65,5 +85,8 @@
             </classpath>
             <formatter type="brief" usefile="false"/>
         </junit>
+    </target>
+    <target name="ascii" depends="build">
+        <native2ascii encoding="Unicode"  src="${src}/locale/hebrew" dest="out/ascii" includes="*.properties"/>
     </target>
 </project>
