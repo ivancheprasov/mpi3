@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import static main.DotDAOImpl.isHit;
+
 public class DotDAOImplTest {
     private static Connection connection;
     private static Properties properties = PropertiesLoader.getProperties();
@@ -94,15 +96,6 @@ public class DotDAOImplTest {
         assert dao.getDots().size() == 2;
         dao.deleteDotById(dot.getId());
         assert dao.getDots().size() == 1;
-    }
-
-    @Test
-    public void testIsHit() {
-        assert dao.isHit(1, 2, 3);
-        assert !dao.isHit(-4, 2, 4);
-        assert !dao.isHit(-1, -3, 2);
-        assert !dao.isHit(3, -1, 1);
-        assert dao.isHit(1, 1, 4);
     }
 
     private void assertDots(Dot created, Dot toCreate) {
