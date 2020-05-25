@@ -2,13 +2,10 @@ package test;
 
 import main.Dot;
 import main.DotDAOImpl;
-import org.eclipse.persistence.annotations.IdValidation;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import javax.servlet.ServletContext;
-import javax.faces.context.FacesContext;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -25,6 +22,8 @@ public class DotDAOImplTest {
 
     private static final String USER = getProperty("USER");
     private static final String PASS = getProperty("PASS");
+//    private static final String USER = "postgres";
+//    private static final String PASS = "postgres";
 
     private static DotDAOImpl dao;
 
@@ -126,10 +125,8 @@ public class DotDAOImplTest {
         }
         if (isPathChanged) {
             try {
-                ServletContext ctx = (ServletContext) FacesContext
-                        .getCurrentInstance().getExternalContext().getContext();
-                String deploymentDirectoryPath = ctx.getRealPath("/");
-                properties.load(new FileReader(deploymentDirectoryPath + "/WEB-INF/classes/META-INF/data.properties"));
+                String path = new File(".").getCanonicalPath();
+                properties.load(new FileReader(path + "/../out/build/WEB-INF/classes/META-INF/data.properties"));
             } catch (IOException | NullPointerException e) {
                 System.out.println("Невозможно получить доступ к данным.");
             }

@@ -60,6 +60,9 @@
                 <pathelement location="${lib}/javax.persistence-api-2.2.jar"/>
                 <pathelement location="${lib}/eclipselink-2.5.0.jar"/>
                 <pathelement location="${lib}/postgresql-42.2.12.jar"/>
+                <pathelement location="${lib}/javax.faces-2.4.0.jar"/>
+                <pathelement location="${lib}/javax.servlet.jar"/>
+                <pathelement location="${lib}/persistenceUnit.jar"/>
             </classpath>
             <formatter type="brief" usefile="false"/>
         </junit>
