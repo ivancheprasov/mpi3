@@ -7,6 +7,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.servlet.ServletContext;
+import javax.faces.context.FacesContext;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,7 +24,6 @@ public class DotDAOImplTest {
     private static final String DB_URL = "jdbc:postgresql://127.0.0.1:5432/postgres";
 
     private static final String USER = getProperty("USER");
-
     private static final String PASS = getProperty("PASS");
 
     private static DotDAOImpl dao;
@@ -115,10 +117,22 @@ public class DotDAOImplTest {
 
     private static Properties getProperties() {
         Properties properties = new Properties();
+        boolean isPathChanged = false;
         try {
-            properties.load(ClassLoader.getSystemResource("META-INF/data.properties").openStream());
-        } catch (IOException e) {
-            System.out.println("Не удалось загрузить учётные данные.");
+            properties.load(ClassLoader.getSystemResourceAsStream("META-INF/data.properties"));
+        } catch (IOException | NullPointerException e) {
+            isPathChanged = true;
+            System.out.println("Возможно, путь к файлам был изменён в следствие того, что вы используете Ant.");
+        }
+        if (isPathChanged) {
+            try {
+                ServletContext ctx = (ServletContext) FacesContext
+                        .getCurrentInstance().getExternalContext().getContext();
+                String deploymentDirectoryPath = ctx.getRealPath("/");
+                properties.load(new FileReader(deploymentDirectoryPath + "/WEB-INF/classes/META-INF/data.properties"));
+            } catch (IOException | NullPointerException e) {
+                System.out.println("Невозможно получить доступ к данным.");
+            }
         }
         return properties;
     }

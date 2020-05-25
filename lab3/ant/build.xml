@@ -1,7 +1,11 @@
 <project name="lab3" default="compile" basedir="..">
     <property file="ant/build.properties"/>
-    <path id="classpathCompile">
+    <path id="classpathCompileMain">
         <fileset dir="${lib}" includes="*.jar"/>
+    </path>
+    <path id="classpathCompileTest">
+        <fileset dir="${lib}" includes="*.jar"/>
+        <fileset dir="${production.main}" includes="*.class"/>
     </path>
     <target name="clean">
         <delete dir="${out}"/>
@@ -17,7 +21,9 @@
     </target>
     <target name="compile" depends="clean,init">
         <echo>Compiling the source files</echo>
-        <javac srcdir="${src.main}" destdir="${production}" classpathref="classpathCompile" compiler="javac1.8"
+        <javac srcdir="${src.main}" destdir="${production}" classpathref="classpathCompileMain" compiler="javac1.8"
+               failonerror="false" includeantruntime="false"/>
+        <javac srcdir="${src.test}" destdir="${production}" compiler="javac1.8" classpathref="classpathCompileTest"
                failonerror="false" includeantruntime="false"/>
     </target>
     <target name="copy" depends="compile">
@@ -33,11 +39,29 @@
         <copy todir="${build.META-INF}">
             <fileset dir="${META-INF}"/>
         </copy>
+        <copy todir="${build.test}">
+            <fileset dir="${production.test}"/>
+        </copy>
     </target>
     <target name="build" depends="copy">
         <echo>Building the war file</echo>
         <war destfile="${artifact}/${project.name}.war" webxml="${web.xml}">
             <fileset dir="${build}"/>
         </war>
+    </target>
+    <target name="test" depends="build">
+        <junit printsummary="on">
+            <test name="test.DotDAOImplTest"/>
+            <classpath>
+                <pathelement location="${lib}/junit-4.12.jar"/>
+                <pathelement location="${lib}/hamcrest-all-1.3.jar"/>
+                <pathelement location="${production}"/>
+                <pathelement location="${build.META-INF}/persistence.xml"/>
+                <pathelement location="${lib}/javax.persistence-api-2.2.jar"/>
+                <pathelement location="${lib}/eclipselink-2.5.0.jar"/>
+                <pathelement location="${lib}/postgresql-42.2.12.jar"/>
+            </classpath>
+            <formatter type="brief" usefile="false"/>
+        </junit>
     </target>
 </project>
