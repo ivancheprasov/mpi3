@@ -7,20 +7,22 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 public class DotDAOImplTest {
     private static Connection connection;
-
+    private static Properties properties = getProperties();
     private static final String DB_URL = "jdbc:postgresql://127.0.0.1:5432/postgres";
 
-    private static final String USER = "postgres";
+    private static final String USER = getProperty("USER");
 
-    private static final String PASS = "ScAk9aFpI1";
+    private static final String PASS = getProperty("PASS");
 
     private static DotDAOImpl dao;
 
@@ -37,7 +39,7 @@ public class DotDAOImplTest {
             connection = DriverManager
                     .getConnection(DB_URL, USER, PASS);
         } catch (SQLException e) {
-            System.out.println("База данных не существует");
+            System.out.println("База данных не существует.");
             System.exit(0);
         }
     }
@@ -97,12 +99,12 @@ public class DotDAOImplTest {
     }
 
     @Test
-    public void testIsHit(){
-        assert dao.isHit(1,2,3);
+    public void testIsHit() {
+        assert dao.isHit(1, 2, 3);
         assert !dao.isHit(-4, 2, 4);
         assert !dao.isHit(-1, -3, 2);
         assert !dao.isHit(3, -1, 1);
-        assert dao.isHit(1,1, 4);
+        assert dao.isHit(1, 1, 4);
     }
 
     private void assertDots(Dot created, Dot toCreate) {
@@ -111,4 +113,17 @@ public class DotDAOImplTest {
         assert created.getY() == toCreate.getY();
     }
 
+    private static Properties getProperties() {
+        Properties properties = new Properties();
+        try {
+            properties.load(ClassLoader.getSystemResource("META-INF/data.properties").openStream());
+        } catch (IOException e) {
+            System.out.println("Не удалось загрузить учётные данные.");
+        }
+        return properties;
+    }
+
+    private static String getProperty(String name) {
+        return properties.get(name).toString();
+    }
 }
