@@ -10,10 +10,10 @@
     <dependency org="javax.persistence" name="javax.persistence-api" rev="2.2"/>
     <!-- https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa -->
     <dependency org="org.eclipse.persistence" name="org.eclipse.persistence.jpa" rev="2.5.0"/>
-    <!-- https://mvnrepository.com/artifact/javax.faces/jsf-api -->
-    <dependency org="javax.faces" name="jsf-api" rev="2.1"/>
-    <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
-    <dependency org="javax.servlet" name="javax.servlet-api" rev="3.0.1"/>
+    <!--&lt;!&ndash; https://mvnrepository.com/artifact/javax.faces/jsf-api &ndash;&gt;-->
+    <!--<dependency org="javax.faces" name="jsf-api" rev="2.1"/>-->
+    <!--&lt;!&ndash; https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api &ndash;&gt;-->
+    <!--<dependency org="javax.servlet" name="javax.servlet-api" rev="3.0.1"/>-->
     <!-- https://mvnrepository.com/artifact/org.eclipse.persistence/javax.persistence -->
     <dependency org="org.eclipse.persistence" name="javax.persistence" rev="2.1.0"/>
 </dependencies>

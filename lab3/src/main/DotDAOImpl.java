@@ -1,5 +1,6 @@
 package main;
 
+import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.eclipse.persistence.jpa.PersistenceProvider;
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -23,121 +24,137 @@ public class DotDAOImpl implements DotDAO {
     private EntityManager entityManager;
     private Properties properties = PropertiesLoader.getProperties();
     public void activateComponent() {
-
-        Map<String, String> map = new HashMap<>();
-        PersistenceProvider persistenceProvider = new PersistenceProvider();
-        map.put("javax.persistence.jdbc.driver", org.postgresql.Driver.class.getName());
-        map.put("javax.persistence.jdbc.url", "jdbc:postgresql://localhost:5432/postgres");
-        map.put("javax.persistence.jdbc.user", getProperty("USER"));
-        map.put("javax.persistence.jdbc.password", getProperty("PASS"));
-        map.put("eclipselink.ddl-generation", "create-or-extend-tables");
-        map.put("eclipselink.ddl-generation.output-mode", "database");
-        map.put("eclipselink.logging.level", "FINE");
-        map.put("eclipselink.allow-zero-id", "true");
+        boolean isAnt=false;
+        try {
+            isAnt=new File(".").getCanonicalPath().contains("ant");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        if(isAnt){
+            Map<String, String> map = new HashMap<>();
+            PersistenceProvider persistenceProvider = new PersistenceProvider();
+            map.put("javax.persistence.jdbc.driver", org.postgresql.Driver.class.getName());
+            map.put("javax.persistence.jdbc.url", "jdbc:postgresql://localhost:5432/postgres");
+            map.put("javax.persistence.jdbc.user", getProperty("USER"));
+            map.put("javax.persistence.jdbc.password", getProperty("PASS"));
+            map.put("eclipselink.ddl-generation", "create-or-extend-tables");
+            map.put("eclipselink.ddl-generation.output-mode", "database");
+            map.put("eclipselink.logging.level", "FINE");
+            map.put("eclipselink.allow-zero-id", "true");
 //        PersistenceUnitProperties.
-        EntityManagerFactory emf = persistenceProvider.createContainerEntityManagerFactory(new PersistenceUnitInfo(){
-            @Override
-            public String getPersistenceUnitName() {
-                return  "unit";
-            }
-
-            @Override
-            public String getPersistenceProviderClassName() {
-                return org.eclipse.persistence.jpa.PersistenceProvider.class.getName();
-            }
-
-            @Override
-            public PersistenceUnitTransactionType getTransactionType() {
-                return PersistenceUnitTransactionType.RESOURCE_LOCAL;
-            }
-
-            @Override
-            public DataSource getJtaDataSource() {
-                return null;
-            }
-
-            @Override
-            public DataSource getNonJtaDataSource() {
-                return null;
-            }
-
-            @Override
-            public List<String> getMappingFileNames() {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public List<URL> getJarFileUrls() {
-                try {
-                    return Collections.list(this.getClass()
-                            .getClassLoader()
-                            .getResources(""));
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
+            EntityManagerFactory emf = persistenceProvider.createContainerEntityManagerFactory(new PersistenceUnitInfo(){
+                @Override
+                public String getPersistenceUnitName() {
+                    return  "unit";
                 }
-            }
 
-            @Override
-            public URL getPersistenceUnitRootUrl() {
-                try {
-                    return new File(".").toURL();
-                } catch (Exception e){
+                @Override
+                public String getPersistenceProviderClassName() {
+                    return org.eclipse.persistence.jpa.PersistenceProvider.class.getName();
+                }
+
+                @Override
+                public PersistenceUnitTransactionType getTransactionType() {
+                    return PersistenceUnitTransactionType.RESOURCE_LOCAL;
+                }
+
+                @Override
+                public DataSource getJtaDataSource() {
                     return null;
                 }
-            }
 
-            @Override
-            public List<String> getManagedClassNames() {
-                return Arrays.asList(Dot.class.getName());
-            }
+                @Override
+                public DataSource getNonJtaDataSource() {
+                    return null;
+                }
 
-            @Override
-            public boolean excludeUnlistedClasses() {
-                return false;
-            }
+                @Override
+                public List<String> getMappingFileNames() {
+                    return Collections.emptyList();
+                }
 
-            @Override
-            public SharedCacheMode getSharedCacheMode() {
-                return null;
-            }
+                @Override
+                public List<URL> getJarFileUrls() {
+                    try {
+                        return Collections.list(this.getClass()
+                                .getClassLoader()
+                                .getResources(""));
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                }
 
-            @Override
-            public ValidationMode getValidationMode() {
-                return null;
-            }
+                @Override
+                public URL getPersistenceUnitRootUrl() {
+                    try {
+                        return new File(".").toURL();
+                    } catch (Exception e){
+                        return null;
+                    }
+                }
 
-            @Override
-            public Properties getProperties() {
-                return new Properties();
-            }
+                @Override
+                public List<String> getManagedClassNames() {
+                    return Arrays.asList(Dot.class.getName());
+                }
 
-            @Override
-            public String getPersistenceXMLSchemaVersion() {
-                return null;
-            }
+                @Override
+                public boolean excludeUnlistedClasses() {
+                    return false;
+                }
 
-            @Override
-            public ClassLoader getClassLoader() {
-                return ClassLoader.getSystemClassLoader();
-            }
+                @Override
+                public SharedCacheMode getSharedCacheMode() {
+                    return null;
+                }
 
-            @Override
-            public void addTransformer(ClassTransformer classTransformer) {
+                @Override
+                public ValidationMode getValidationMode() {
+                    return null;
+                }
 
-            }
+                @Override
+                public Properties getProperties() {
+                    return new Properties();
+                }
 
-            @Override
-            public ClassLoader getNewTempClassLoader() {
-                return null;
-            }
-        }, map);
+                @Override
+                public String getPersistenceXMLSchemaVersion() {
+                    return null;
+                }
+
+                @Override
+                public ClassLoader getClassLoader() {
+                    return ClassLoader.getSystemClassLoader();
+                }
+
+                @Override
+                public void addTransformer(ClassTransformer classTransformer) {
+
+                }
+
+                @Override
+                public ClassLoader getNewTempClassLoader() {
+                    return null;
+                }
+            }, map);
 //        map.put(PersistenceUnitProperties.CLASSLOADER, getClass().getClassLoader());
 //        if(System.getProperty("os.name").contains("Windows")) {
 //            entityManagerFactory = Persistence.createEntityManagerFactory("postgresql-eclipselink", map);
 //        } else {
 //            entityManagerFactory = Persistence.createEntityManagerFactory("postgresql-eclipselink-helios", map);
 //        }
-        entityManager = emf.createEntityManager();
+            entityManager = emf.createEntityManager();
+        }else{
+            Map map = new HashMap();
+            map.put(PersistenceUnitProperties.CLASSLOADER, getClass().getClassLoader());
+            if(System.getProperty("os.name").contains("Windows")) {
+                entityManagerFactory = Persistence.createEntityManagerFactory("postgresql-eclipselink", map);
+            } else {
+                entityManagerFactory = Persistence.createEntityManagerFactory("postgresql-eclipselink-helios", map);
+            }
+            entityManager = entityManagerFactory.createEntityManager();
+        }
     }
 
     public void deactivateComponent() {
