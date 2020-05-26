@@ -195,7 +195,7 @@ public class DotDAOImpl implements DotDAO {
         addDots(dots);
     }
 
-    public boolean isHit(double x, double y, double r) {
+    public static boolean isHit(double x, double y, double r) {
         return (x <= 0 && y >= 0 && pow(x, 2) + pow(y, 2) < pow(r, 2))
                 || (x >= 0 && y >= 0 && y <= r && x <= r / 2)
                 || (x <= 0 && y <= 0 && y >= -x - r);

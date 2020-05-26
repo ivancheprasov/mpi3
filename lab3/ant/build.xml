@@ -1,15 +1,12 @@
 <project name="lab3" default="compile" basedir=".." xmlns:ivy="antlib:org.apache.ivy.ant">
     <property file="ant/build.properties"/>
-    <path id="classpathCompileMain">
+    <path id="classpathLib">
         <fileset dir="${lib}" includes="*.jar"/>
-    </path>
-    <path id="classpathCompileTest">
-        <fileset dir="${lib}" includes="*.jar"/>
-        <fileset dir="${production.main}" includes="*.class"/>
     </path>
     <target name="bootstrap" description="Install ivy">
         <mkdir dir="${user.home}/.ant/lib"/>
-        <get dest="${user.home}/.ant/lib/ivy.jar" src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/ivy-2.5.0.jar"/>
+        <get dest="${user.home}/.ant/lib/ivy.jar"
+             src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/ivy-2.5.0.jar"/>
     </target>
     <taskdef resource="org/apache/ivy/ant/antlib.xml"
              uri="pastrami:with.mustard">
@@ -31,12 +28,21 @@
         <mkdir dir="${production}"/>
         <echo message="The build directory is created"/>
     </target>
-    <target name="compile" depends="clean-all,init">
+    <target name="compile" depends="resolve">
         <echo>Compiling the source files</echo>
-        <javac srcdir="${src.main}" destdir="${production}" classpathref="classpathCompileMain" compiler="javac1.8"
-               failonerror="false" includeantruntime="false"/>
-        <javac srcdir="${src.test}" destdir="${production}" compiler="javac1.8" classpathref="classpathCompileTest"
-               failonerror="false" includeantruntime="false"/>
+        <javac srcdir="${src.main}" destdir="${production}" compiler="javac1.8"
+               failonerror="false" includeantruntime="false">
+            <classpath refid="resolved"/>
+            <classpath refid="classpathLib"/>
+        </javac>
+        <javac srcdir="${src.test}" destdir="${production}" compiler="javac1.8"
+               failonerror="false" includeantruntime="false">
+            <classpath refid="resolved"/>
+            <classpath refid="classpathLib"/>
+            <classpath>
+                <fileset dir="${production.main}" includes="*.class"/>
+            </classpath>
+        </javac>
     </target>
     <target name="copy" depends="compile">
         <copy todir="${build}">
@@ -58,9 +64,10 @@
     <target name="clean-all" depends="clean" description="Purge ivy cache">
         <ivy:cleancache/>
     </target>
-    <target name="resolve">
+    <target name="resolve" depends="clean-all,init">
         <ivy:settings/>
-        <ivy:resolve file="ant/ivy.xml" />
+        <ivy:resolve file="ant/ivy.xml"/>
+        <ivy:cachepath pathid="resolved"/>
     </target>
     <target name="build" depends="copy">
         <echo>Building the war file</echo>
@@ -68,25 +75,92 @@
             <fileset dir="${build}"/>
         </war>
     </target>
-    <target name="test" depends="build,resolve">
+    <target name="test1" depends="build">
+        <ivy:retrieve/>
+        <junit printsummary="on">
+            <test name="test.DotAreaTest"/>
+            <classpath>
+                <pathelement location="${production}"/>
+            </classpath>
+            <classpath refid="classpathLib"/>
+            <classpath refid="resolved"/>
+            <formatter type="brief" usefile="false"/>
+        </junit>
+    </target>
+    <target name="test2" depends="build">
         <ivy:retrieve/>
         <junit printsummary="on">
             <test name="test.DotDAOImplTest"/>
             <classpath>
-                <pathelement location="${lib}/junit-4.12.jar"/>
-                <pathelement location="${lib}/hamcrest-all-1.3.jar"/>
                 <pathelement location="${production}"/>
-                <pathelement location="${lib}/javax.persistence-api-2.2.jar"/>
-                <pathelement location="${lib}/eclipselink-2.5.0.jar"/>
-                <pathelement location="${lib}/postgresql-42.2.12.jar"/>
-                <pathelement location="${lib}/javax.faces-2.4.0.jar"/>
-                <pathelement location="${lib}/javax.servlet.jar"/>
-                <pathelement location="${lib}/persistenceUnit.jar"/>
             </classpath>
+            <classpath refid="resolved"/>
             <formatter type="brief" usefile="false"/>
         </junit>
     </target>
     <target name="ascii" depends="build">
-        <native2ascii encoding="Unicode"  src="${src}/locale/hebrew" dest="out/ascii" includes="*.properties"/>
+        <native2ascii encoding="UTF-16BE" src="${src}/locale/hebrew" dest="out/ascii" includes="*.properties"/>
+    </target>
+    <condition property="isLangSetProperly">
+        <or>
+            <equals arg1="${lang}" arg2="ENG"/>
+            <equals arg1="${lang}" arg2="RUS"/>
+            <equals arg1="${lang}" arg2="DEU"/>
+        </or>
+    </condition>
+    <condition property="isLangENG" value="Welcome">
+        <equals arg1="${lang}" arg2="ENG"/>
+    </condition>
+    <condition property="isLangRUS" value="Добро пожаловать">
+        <equals arg1="${lang}" arg2="RUS"/>
+    </condition>
+    <condition property="isLangDEU" value="Herzlich Willkommen">
+        <equals arg1="${lang}" arg2="DEU"/>
+    </condition>
+    <target name="message" depends="copy" unless="isLangSetProperly">
+        <echo>Please set the "lang" parameter in build.properties to one of each values: ENG, RUS, DEU.</echo>
+    </target>
+    <target name="createREADME" depends="message">
+        <echo>Creating the README file.</echo>
+        <touch file="${build}/README.txt"/>
+    </target>
+    <target name="fillREADMEeng" depends="createREADME" if="isLangENG">
+        <echo file="${build.README}" message="${isLangENG}"/>
+        <echo>The README is overwritten now.</echo>
+        <copy todir="${env}" file="${build.README}"/>
+    </target>
+    <target name="fillREADMErus" depends="createREADME" if="isLangRUS">
+        <echo file="${build.README}" message="${isLangRUS}"/>
+        <echo>The README is overwritten now.</echo>
+        <copy todir="${env}" file="${build.README}"/>
+    </target>
+    <target name="fillREADMEdeu" depends="createREADME" if="isLangDEU">
+        <echo file="${build.README}" message="${isLangDEU}"/>
+        <echo>The README is overwritten now.</echo>
+        <copy todir="${env}" file="${build.README}"/>
+    </target>
+    <target name="env" depends="checkJavaVersion,stop,message,createREADME,fillREADMEeng,fillREADMErus,fillREADMEdeu" unless="isJavaVersionOld">
+        <echo>Building the war file with the specific README in case the "lang" parameter is set properly (ENG, RUS, DEU) in build.properties.</echo>
+        <war destfile="${artifact}/${project.name}.war" webxml="${web.xml}">
+            <fileset dir="${build}"/>
+        </war>
+    </target>
+    <target name="checkJavaVersion" depends="copy">
+        <echo>Your current java version is ${ant.java.version}.</echo>
+        <condition property="isJavaVersionOld">
+            <not>
+                <or>
+                    <equals arg1="${ant.java.version}" arg2="1.8"/>
+                    <equals arg1="${ant.java.version}" arg2="9.0"/>
+                    <equals arg1="${ant.java.version}" arg2="10.0"/>
+                    <equals arg1="${ant.java.version}" arg2="11.0"/>
+                    <equals arg1="${ant.java.version}" arg2="12.0"/>
+                    <equals arg1="${ant.java.version}" arg2="13.0"/>
+                </or>
+            </not>
+        </condition>
+    </target>
+    <target name="stop" depends="checkJavaVersion" if="isJavaVersionOld">
+        <fail message="Java version must be 1.8 or higher."/>
     </target>
 </project>
