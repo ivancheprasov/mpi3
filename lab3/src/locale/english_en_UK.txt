@@ -1,0 +1,2 @@
+ChangedFilePath=Ant is probably changing the urls of the files
+CannotAccessData=Unable to access data

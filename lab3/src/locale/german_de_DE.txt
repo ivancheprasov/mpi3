@@ -1,0 +1,2 @@
+ChangedFilePath=Möglicherweise wurde der Dateipfad aufgrund der Verwendung von Ant geändert.
+CannotAccessData=Zugriff auf Daten nicht möglich

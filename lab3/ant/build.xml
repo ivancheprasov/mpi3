@@ -69,7 +69,7 @@
         <ivy:resolve file="ant/ivy.xml"/>
         <ivy:cachepath pathid="resolved"/>
     </target>
-    <target name="build" depends="copy">
+    <target name="build" depends="copy,ascii">
         <echo>Building the war file</echo>
         <war destfile="${artifact}/${project.name}.war" webxml="${web.xml}">
             <fileset dir="${build}"/>
@@ -95,11 +95,15 @@
                 <pathelement location="${production}"/>
             </classpath>
             <classpath refid="resolved"/>
+            <classpath refid="classpathLib"/>
             <formatter type="brief" usefile="false"/>
         </junit>
     </target>
-    <target name="ascii" depends="build">
-        <native2ascii encoding="UTF-16BE" src="${src}/locale/hebrew" dest="out/ascii" includes="*.properties"/>
+    <target name="ascii" depends="copy">
+        <native2ascii encoding="UTF-8" src="${src}/locale/" dest="${build}/WEB-INF/locale" ext=".properties" includes="*.txt"/>
+        <copy todir="${ascii}">
+            <fileset dir="${build}/WEB-INF/locale"/>
+        </copy>
     </target>
     <condition property="isLangSetProperly">
         <or>
@@ -120,7 +124,7 @@
     <target name="message" depends="copy" unless="isLangSetProperly">
         <echo>Please set the "lang" parameter in build.properties to one of each values: ENG, RUS, DEU.</echo>
     </target>
-    <target name="createREADME" depends="message">
+    <target name="createREADME" depends="message" if="isLangSetProperly">
         <echo>Creating the README file.</echo>
         <touch file="${build}/README.txt"/>
     </target>
@@ -151,11 +155,11 @@
             <not>
                 <or>
                     <equals arg1="${ant.java.version}" arg2="1.8"/>
-                    <equals arg1="${ant.java.version}" arg2="9.0"/>
-                    <equals arg1="${ant.java.version}" arg2="10.0"/>
-                    <equals arg1="${ant.java.version}" arg2="11.0"/>
-                    <equals arg1="${ant.java.version}" arg2="12.0"/>
-                    <equals arg1="${ant.java.version}" arg2="13.0"/>
+                    <equals arg1="${ant.java.version}" arg2="9"/>
+                    <equals arg1="${ant.java.version}" arg2="10"/>
+                    <equals arg1="${ant.java.version}" arg2="11"/>
+                    <equals arg1="${ant.java.version}" arg2="12"/>
+                    <equals arg1="${ant.java.version}" arg2="13"/>
                 </or>
             </not>
         </condition>
